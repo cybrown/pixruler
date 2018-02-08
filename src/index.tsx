@@ -63,6 +63,18 @@ class App extends React.Component<{}, {
         });
     }
 
+    decrementTolerance = () => {
+        this.setState(state => ({
+            tolerance: Math.max(state.tolerance - 1, 0),
+        }));
+    };
+
+    incrementTolerance = () => {
+        this.setState(state => ({
+            tolerance: Math.min(state.tolerance + 1, 510),
+        }));
+    };
+
     render() {
         return (
             <div>
@@ -77,12 +89,14 @@ class App extends React.Component<{}, {
                         value={this.state.tolerance}
                         onChange={this.onToleranceChangeHandler}
                     />
+                    <button onClick={this.decrementTolerance}>-</button>
+                    <button onClick={this.incrementTolerance}>+</button>
                 </div>
                 <div>Width: {this.state.width}</div>
                 <div>Height: {this.state.height}</div>
                 <div style={{position: 'relative'}}>
                     <canvas ref={this.onGrabCanvas} onClick={this.onMeasureWithPosition} />
-                    { this.state.top && this.state.height && this.state.cursorX ? (
+                    { this.state.top != null && this.state.height != null && this.state.cursorX != null ? (
                         <div style={{
                             position: 'absolute',
                             border: 'red thin solid',
@@ -92,7 +106,7 @@ class App extends React.Component<{}, {
                             left: this.state.cursorX,
                         }} />
                     ) : null }
-                    { this.state.left && this.state.width && this.state.cursorY ? (
+                    { this.state.left != null && this.state.width != null && this.state.cursorY != null ? (
                         <div style={{
                             position: 'absolute',
                             border: 'red thin solid',

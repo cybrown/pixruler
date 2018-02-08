@@ -35,12 +35,12 @@ export function measureFromPosition(imageData: ImageData, x: number, y: number, 
     height: number;
 } {
     return {
-        bottom: getLastBottomSamePixel(imageData, x, y, maxDistance),
-        height: getHeightAtPosition(imageData, x, y, maxDistance),
+        bottom: getLastBottomSamePixel(imageData, x, y, imageData.height, maxDistance),
+        height: getHeightAtPosition(imageData, x, y, imageData.height, maxDistance),
         left: getLastLeftSamePixel(imageData, x, y, maxDistance),
-        right: getLastRightSamePixel(imageData, x, y, maxDistance),
+        right: getLastRightSamePixel(imageData, x, y, imageData.width, maxDistance),
         top: getLastTopSamePixel(imageData, x, y, maxDistance),
-        width: getWidthAtPosition(imageData, x, y, maxDistance),
+        width: getWidthAtPosition(imageData, x, y, imageData.width, maxDistance),
     };
 }
 
@@ -57,10 +57,10 @@ function getLastTopSamePixel(imageData: ImageData, x: number, y: number, maxDist
     return yToCheck;
 }
 
-function getLastBottomSamePixel(imageData: ImageData, x: number, y: number, maxDistance: number) {
+function getLastBottomSamePixel(imageData: ImageData, x: number, y: number, height: number, maxDistance: number) {
     const startPixel = getPixel(imageData, x, y);
     let yToCheck = y + 1;
-    while (yToCheck != 0) {
+    while (yToCheck < height) {
         const currentPixel = getPixel(imageData, x, yToCheck);
         if (!pixelAreSimilar(currentPixel, startPixel, maxDistance)) {
             return yToCheck - 1;
@@ -70,15 +70,15 @@ function getLastBottomSamePixel(imageData: ImageData, x: number, y: number, maxD
     return yToCheck;
 }
 
-function getHeightAtPosition(imageData: ImageData, x: number, y: number, maxDistance: number): number {
+function getHeightAtPosition(imageData: ImageData, x: number, y: number, height: number, maxDistance: number): number {
     const top = getLastTopSamePixel(imageData, x, y, maxDistance);
-    const bottom = getLastBottomSamePixel(imageData, x, y, maxDistance);
+    const bottom = getLastBottomSamePixel(imageData, x, y, height, maxDistance);
     return bottom - top + 1;
 }
 
-function getWidthAtPosition(imageData: ImageData, x: number, y: number, maxDistance: number): number {
+function getWidthAtPosition(imageData: ImageData, x: number, y: number, width: number, maxDistance: number): number {
     const left = getLastLeftSamePixel(imageData, x, y, maxDistance);
-    const right = getLastRightSamePixel(imageData, x, y, maxDistance);
+    const right = getLastRightSamePixel(imageData, x, y, width, maxDistance);
     return right - left + 1;
 }
 
@@ -95,10 +95,10 @@ function getLastLeftSamePixel(imageData: ImageData, x: number, y: number, maxDis
     return xToCheck;
 }
 
-function getLastRightSamePixel(imageData: ImageData, x: number, y: number, maxDistance: number): number {
+function getLastRightSamePixel(imageData: ImageData, x: number, y: number, width: number, maxDistance: number): number {
     const startPixel = getPixel(imageData, x, y);
     let xToCheck = x + 1;
-    while (xToCheck != 0) {
+    while (xToCheck < width) {
         const currentPixel = getPixel(imageData, xToCheck, y);
         if (!pixelAreSimilar(currentPixel, startPixel, maxDistance)) {
             return xToCheck - 1;
