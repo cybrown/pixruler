@@ -81,3 +81,11 @@ export function getLastRightSamePixel(imageData: ImageData, x: number, y: number
     }
     return xToCheck;
 }
+
+export function colorDistance(color1: Pixel, color2: Pixel): number {
+    let sum = 0;
+    for (let i = 0; i < 4; i++) {
+        sum += (color1[i] - color2[i]) ** 2;
+    }
+    return Math.sqrt(sum);
+}

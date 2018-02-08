@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import assert from 'assert';
-import { getPixelOffset, pixelAreSimilar, getLastTopSamePixel, getLastBottomSamePixel, getHeightAtPosition, getLastLeftSamePixel, getLastRightSamePixel, getWidthAtPosition } from "../src/util";
+import { getPixelOffset, pixelAreSimilar, getLastTopSamePixel, getLastBottomSamePixel, getHeightAtPosition, getLastLeftSamePixel, getLastRightSamePixel, getWidthAtPosition, colorDistance } from "../src/util";
 import { loadSampleImageData } from "./test-util";
 
 describe ('getPixelOffset', () => {
@@ -168,5 +168,20 @@ describe ('getWidthAtPosition', () => {
 
     it ('should compute width at position - 4', () => {
         assert.equal(getWidthAtPosition(imageData, 13, 30), 32);
+    });
+});
+
+describe ('colorDistance', () => {
+
+    it ('should be the same color', () => {
+        assert.equal(colorDistance([12, 12, 12, 255], [12, 12, 12, 255]), 0);
+    });
+
+    it ('should return 1', () => {
+        assert.equal(colorDistance([12, 12, 12, 255], [11, 12, 12, 255]), 1);
+    });
+
+    it ('should return sqrt(2)', () => {
+        assert.equal(colorDistance([12, 12, 12, 255], [11, 11, 12, 255]), Math.sqrt(2));
     });
 });
