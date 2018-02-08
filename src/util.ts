@@ -49,3 +49,35 @@ export function getHeightAtPosition(imageData: ImageData, x: number, y: number):
     const bottom = getLastBottomSamePixel(imageData, x, y);
     return bottom - top + 1;
 }
+
+export function getWidthAtPosition(imageData: ImageData, x: number, y: number): number {
+    const left = getLastLeftSamePixel(imageData, x, y);
+    const right = getLastRightSamePixel(imageData, x, y);
+    return right - left + 1;
+}
+
+export function getLastLeftSamePixel(imageData: ImageData, x: number, y: number): number {
+    const startPixel = getPixel(imageData, x, y);
+    let xToCheck = x - 1;
+    while (xToCheck != 0) {
+        const currentPixel = getPixel(imageData, xToCheck, y);
+        if (!pixelAreSimilar(currentPixel, startPixel)) {
+            return xToCheck + 1;
+        }
+        xToCheck--;
+    }
+    return xToCheck;
+}
+
+export function getLastRightSamePixel(imageData: ImageData, x: number, y: number): number {
+    const startPixel = getPixel(imageData, x, y);
+    let xToCheck = x + 1;
+    while (xToCheck != 0) {
+        const currentPixel = getPixel(imageData, xToCheck, y);
+        if (!pixelAreSimilar(currentPixel, startPixel)) {
+            return xToCheck - 1;
+        }
+        xToCheck++;
+    }
+    return xToCheck;
+}

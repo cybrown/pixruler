@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import assert from 'assert';
-import { getPixelOffset, pixelAreSimilar, getLastTopSamePixel, getLastBottomSamePixel, getHeightAtPosition } from "../src/util";
+import { getPixelOffset, pixelAreSimilar, getLastTopSamePixel, getLastBottomSamePixel, getHeightAtPosition, getLastLeftSamePixel, getLastRightSamePixel, getWidthAtPosition } from "../src/util";
 import { loadSampleImageData } from "./test-util";
 
 describe ('getPixelOffset', () => {
@@ -71,14 +71,6 @@ describe ('getLastBottomSamePixel', () => {
     });
 });
 
-function getLastLeftSamePixel(imageData: ImageData, x: number, y: number): number {
-    return 0;
-}
-
-function getLastRightSamePixel(imageData: ImageData, x: number, y: number): number {
-    return 0;
-}
-
 describe ('getLastLeftSamePixel', () => {
 
     let imageData: ImageData;
@@ -88,7 +80,7 @@ describe ('getLastLeftSamePixel', () => {
     });
 
     it ('should tell the y coordinate of the first different left pixel - 0', () => {
-        assert.equal(getLastLeftSamePixel(imageData, 10, 9), 6);
+        assert.equal(getLastLeftSamePixel(imageData, 17, 4), 13);
     });
 
     it ('should tell the y coordinate of the first different left pixel - 1', () => {
@@ -96,7 +88,7 @@ describe ('getLastLeftSamePixel', () => {
     });
 
     it ('should tell the y coordinate of the first different left pixel - 2', () => {
-        assert.equal(getLastLeftSamePixel(imageData, 14, 15), 15);
+        assert.equal(getLastLeftSamePixel(imageData, 6, 21), 6);
     });
 });
 
@@ -109,15 +101,15 @@ describe ('getLastRightSamePixel', () => {
     });
 
     it ('should tell the y coordinate of the first different right pixel - 0', () => {
-        assert.equal(getLastRightSamePixel(imageData, 10, 9), 11);
+        assert.equal(getLastRightSamePixel(imageData, 2, 13), 8);
     });
 
     it ('should tell the y coordinate of the first different right pixel - 1', () => {
-        assert.equal(getLastRightSamePixel(imageData, 24, 26), 31);
+        assert.equal(getLastRightSamePixel(imageData, 14, 8), 31);
     });
 
     it ('should tell the y coordinate of the first different right pixel - 2', () => {
-        assert.equal(getLastRightSamePixel(imageData, 4, 19), 19);
+        assert.equal(getLastRightSamePixel(imageData, 28, 24), 28);
     });
 });
 
@@ -145,7 +137,36 @@ describe ('getHeightAtPosition', () => {
         assert.equal(getHeightAtPosition(imageData, 30, 30), 3);
     });
 
-    it ('should compute height at position - 3', () => {
+    it ('should compute height at position - 4', () => {
         assert.equal(getHeightAtPosition(imageData, 25, 19), 32);
+    });
+});
+
+describe ('getWidthAtPosition', () => {
+
+    let imageData: ImageData;
+
+    beforeEach(async () => {
+        imageData = await loadSampleImageData();
+    });
+
+    it ('should compute width at position - 0', () => {
+        assert.equal(getWidthAtPosition(imageData, 10, 1), 32);
+    });
+
+    it ('should compute width at position - 1', () => {
+        assert.equal(getWidthAtPosition(imageData, 1, 4), 3);
+    });
+
+    it ('should compute width at position - 2', () => {
+        assert.equal(getWidthAtPosition(imageData, 26, 20), 4);
+    });
+
+    it ('should compute width at position - 3', () => {
+        assert.equal(getWidthAtPosition(imageData, 31, 26), 1);
+    });
+
+    it ('should compute width at position - 4', () => {
+        assert.equal(getWidthAtPosition(imageData, 13, 30), 32);
     });
 });

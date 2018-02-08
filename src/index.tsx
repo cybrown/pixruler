@@ -1,14 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import pasteImage from 'paste-image';
-import { getHeightAtPosition } from './util';
+import { getHeightAtPosition, getWidthAtPosition } from './util';
 
-class App extends React.Component<{}, {heightToDisplay: number | null}> {
+class App extends React.Component<{}, {
+    heightToDisplay: number | null;
+    widthToDisplay: number | null;
+}> {
 
     canvas: HTMLCanvasElement | null = null;
     ctx: CanvasRenderingContext2D | null = null;
     state = {
         heightToDisplay: null,
+        widthToDisplay: null,
     };
     imageData: ImageData | null = null;
 
@@ -33,8 +37,10 @@ class App extends React.Component<{}, {heightToDisplay: number | null}> {
         const y = e.nativeEvent.offsetY;
         if (this.imageData) {
             const height = getHeightAtPosition(this.imageData, x, y);
+            const width = getWidthAtPosition(this.imageData, x, y);
             this.setState({
                 heightToDisplay: height,
+                widthToDisplay: width,
             });
         }
     };
@@ -43,6 +49,7 @@ class App extends React.Component<{}, {heightToDisplay: number | null}> {
         return (
             <div>
                 <div>Use ctrl (or cmd) + V to paste your image</div>
+                <div>Width: {this.state.widthToDisplay}</div>
                 <div>Height: {this.state.heightToDisplay}</div>
                 <canvas ref={this.onGrabCanvas} onClick={this.onGetHeight} />
             </div>
