@@ -71,6 +71,56 @@ describe ('getLastBottomSamePixel', () => {
     });
 });
 
+function getLastLeftSamePixel(imageData: ImageData, x: number, y: number): number {
+    return 0;
+}
+
+function getLastRightSamePixel(imageData: ImageData, x: number, y: number): number {
+    return 0;
+}
+
+describe ('getLastLeftSamePixel', () => {
+
+    let imageData: ImageData;
+
+    beforeEach(async () => {
+        imageData = await loadSampleImageData();
+    });
+
+    it ('should tell the y coordinate of the first different left pixel - 0', () => {
+        assert.equal(getLastLeftSamePixel(imageData, 10, 9), 6);
+    });
+
+    it ('should tell the y coordinate of the first different left pixel - 1', () => {
+        assert.equal(getLastLeftSamePixel(imageData, 20, 9), 0);
+    });
+
+    it ('should tell the y coordinate of the first different left pixel - 2', () => {
+        assert.equal(getLastLeftSamePixel(imageData, 14, 15), 15);
+    });
+});
+
+describe ('getLastRightSamePixel', () => {
+
+    let imageData: ImageData;
+
+    beforeEach(async () => {
+        imageData = await loadSampleImageData();
+    });
+
+    it ('should tell the y coordinate of the first different right pixel - 0', () => {
+        assert.equal(getLastRightSamePixel(imageData, 10, 9), 11);
+    });
+
+    it ('should tell the y coordinate of the first different right pixel - 1', () => {
+        assert.equal(getLastRightSamePixel(imageData, 24, 26), 31);
+    });
+
+    it ('should tell the y coordinate of the first different right pixel - 2', () => {
+        assert.equal(getLastRightSamePixel(imageData, 4, 19), 19);
+    });
+});
+
 describe ('getHeightAtPosition', () => {
 
     let imageData: ImageData;
