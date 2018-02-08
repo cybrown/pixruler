@@ -43,3 +43,9 @@ export function getLastBottomSamePixel(imageData: ImageData, x: number, y: numbe
     }
     return yToCheck;
 }
+
+export function getHeightAtPosition(imageData: ImageData, x: number, y: number): number {
+    const top = getLastTopSamePixel(imageData, x, y);
+    const bottom = getLastBottomSamePixel(imageData, x, y);
+    return bottom - top + 1;
+}

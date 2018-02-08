@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import assert from 'assert';
-import { getPixelOffset, pixelAreSimilar, getLastTopSamePixel, getLastBottomSamePixel } from "../src/util";
+import { getPixelOffset, pixelAreSimilar, getLastTopSamePixel, getLastBottomSamePixel, getHeightAtPosition } from "../src/util";
 import { loadSampleImageData } from "./test-util";
 
 describe ('getPixelOffset', () => {
@@ -70,12 +70,6 @@ describe ('getLastBottomSamePixel', () => {
         assert.equal(getLastBottomSamePixel(imageData, 4, 19), 19);
     });
 });
-
-function getHeightAtPosition(imageData: ImageData, x: number, y: number): number {
-    const top = getLastTopSamePixel(imageData, x, y);
-    const bottom = getLastBottomSamePixel(imageData, x, y);
-    return bottom - top + 1;
-}
 
 describe ('getHeightAtPosition', () => {
 
