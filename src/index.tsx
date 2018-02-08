@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import pasteImage from 'paste-image';
-import { getHeightAtPosition, getWidthAtPosition, getLastLeftSamePixel, getLastTopSamePixel } from './util';
+import { measureFromPosition } from './util';
 
 import './style.css';
 
@@ -46,11 +46,11 @@ class App extends React.Component<{}, {
         const cursorX = e.nativeEvent.offsetX;
         const cursorY = e.nativeEvent.offsetY;
         if (this.imageData) {
-            const top = getLastTopSamePixel(this.imageData, cursorX, cursorY);
-            const left = getLastLeftSamePixel(this.imageData, cursorX, cursorY);
-            const height = getHeightAtPosition(this.imageData, cursorX, cursorY);
-            const width = getWidthAtPosition(this.imageData, cursorX, cursorY);
-            this.setState({top, left, width, height, cursorX, cursorY});
+            this.setState({
+                ...measureFromPosition(this.imageData, cursorX, cursorY),
+                cursorX,
+                cursorY,
+            });
         }
     };
 
