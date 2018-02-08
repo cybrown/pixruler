@@ -21,11 +21,11 @@ describe ('getPixelOffset', () => {
 describe ('pixelAreSimilar', () => {
 
     it ('should be similar pixels', () => {
-        assert.ok(pixelAreSimilar([5, 5, 5, 5], [5, 5, 5, 5]));
+        assert.ok(pixelAreSimilar([5, 5, 5, 5], [5, 5, 5, 5], 0));
     });
 
     it ('should not be similar pixels', () => {
-        assert.equal(pixelAreSimilar([5, 5, 5, 5], [5, 4, 5, 5]), false);
+        assert.equal(pixelAreSimilar([5, 5, 5, 5], [5, 4, 5, 5], 0), false);
     });
 });
 

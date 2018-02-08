@@ -12,6 +12,7 @@ class App extends React.Component<{}, {
     height: number | null;
     cursorX: number | null;
     cursorY: number | null;
+    tolerance: number;
 }> {
 
     canvas: HTMLCanvasElement | null = null;
@@ -23,6 +24,7 @@ class App extends React.Component<{}, {
         height: null,
         cursorX: null,
         cursorY: null,
+        tolerance: 0,
     };
     imageData: ImageData | null = null;
 
@@ -42,26 +44,44 @@ class App extends React.Component<{}, {
         this.ctx = e.getContext('2d');
     };
 
-    onGetHeight: React.MouseEventHandler<HTMLCanvasElement> = e => {
+    onMeasureWithPosition: React.MouseEventHandler<HTMLCanvasElement> = e => {
         const cursorX = e.nativeEvent.offsetX;
         const cursorY = e.nativeEvent.offsetY;
         if (this.imageData) {
             this.setState({
-                ...measureFromPosition(this.imageData, cursorX, cursorY),
+                ...measureFromPosition(this.imageData, cursorX, cursorY, this.state.tolerance),
                 cursorX,
                 cursorY,
+                tolerance: this.state.tolerance,
             });
         }
     };
+
+    onToleranceChangeHandler: React.ChangeEventHandler<HTMLInputElement> = e => {
+        this.setState({
+            tolerance: Number(e.target.value),
+        });
+    }
 
     render() {
         return (
             <div>
                 <div>Use ctrl (or cmd) + V to paste your image</div>
+                <div>
+                    Tolerance: ({this.state.tolerance})
+                    <input
+                        type="range"
+                        min="0"
+                        max="510"
+                        step="1"
+                        value={this.state.tolerance}
+                        onChange={this.onToleranceChangeHandler}
+                    />
+                </div>
                 <div>Width: {this.state.width}</div>
                 <div>Height: {this.state.height}</div>
                 <div style={{position: 'relative'}}>
-                    <canvas ref={this.onGrabCanvas} onClick={this.onGetHeight} />
+                    <canvas ref={this.onGrabCanvas} onClick={this.onMeasureWithPosition} />
                     { this.state.top && this.state.height && this.state.cursorX ? (
                         <div style={{
                             position: 'absolute',
