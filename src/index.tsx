@@ -23,6 +23,11 @@ interface AppState {
     isMouseDown: boolean;
 }
 
+const preventDefaultAndStopPropagation = (e: Event) => {
+    e.stopPropagation();
+    e.preventDefault();
+};
+
 class App extends React.Component<{}, AppState> {
 
     canvas: HTMLCanvasElement | null = null;
@@ -49,6 +54,30 @@ class App extends React.Component<{}, AppState> {
                 this.ctx.drawImage(image, 0, 0);
                 this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
             }
+        });
+        ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave'].map(a => {
+            document.addEventListener(a, preventDefaultAndStopPropagation);
+        });
+        document.addEventListener('drop', event => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const droppedFiles = event.dataTransfer.files;
+            var img = document.createElement('img');
+            img.onload = () => {
+                window.URL.revokeObjectURL(img.src);
+                if (this.canvas && this.ctx) {
+                    this.canvas.width = 0;
+                    this.canvas.height = 0;
+                    this.canvas.width = img.width;
+                    this.canvas.height = img.height;
+                    this.ctx.drawImage(img, 0, 0);
+                    this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                } else {
+                    alert('canvas or context is null');
+                }
+            };
+            img.src = window.URL.createObjectURL(droppedFiles[0]);
         });
     }
 
