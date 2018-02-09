@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import assert from 'assert';
-import { getPixelOffset, pixelAreSimilar, colorDistance, measureFromPosition, detectContainingRectangle, Rectangle } from "../src/util";
+import { getPixelOffset, colorAreSimilar, colorDistance, measureFromPosition, detectContainingRectangle, Rectangle } from "../src/util";
 import { loadSampleImageData } from "./test-util";
 
 describe ('getPixelOffset', () => {
@@ -18,14 +18,14 @@ describe ('getPixelOffset', () => {
     });
 });
 
-describe ('pixelAreSimilar', () => {
+describe ('colorAreSimilar', () => {
 
-    it ('should be similar pixels', () => {
-        assert.ok(pixelAreSimilar([5, 5, 5, 5], [5, 5, 5, 5], 0));
+    it ('should be similar colors', () => {
+        assert.ok(colorAreSimilar([5, 5, 5, 5], [5, 5, 5, 5], 0));
     });
 
-    it ('should not be similar pixels', () => {
-        assert.equal(pixelAreSimilar([5, 5, 5, 5], [5, 4, 5, 5], 0), false);
+    it ('should not be similar colors', () => {
+        assert.equal(colorAreSimilar([5, 5, 5, 5], [5, 4, 5, 5], 0), false);
     });
 });
 
