@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import assert from 'assert';
-import { getPixelOffset, pixelAreSimilar, colorDistance, measureFromPosition } from "../src/util";
+import { getPixelOffset, pixelAreSimilar, colorDistance, measureFromPosition, detectContainingRectangle, Rectangle } from "../src/util";
 import { loadSampleImageData } from "./test-util";
 
 describe ('getPixelOffset', () => {
@@ -138,5 +138,39 @@ describe ('colorDistance', () => {
 
     it ('should return sqrt(2)', () => {
         assert.equal(colorDistance([12, 12, 12, 255], [11, 11, 12, 255]), Math.sqrt(2));
+    });
+});
+
+describe ('detectContainingRectangle', () => {
+
+    let rectangle: Rectangle;
+
+    beforeEach(async () => {
+        const imageData = await loadSampleImageData();
+        rectangle = detectContainingRectangle(imageData, 14, 17, 25, 30);
+    });
+
+    it ('should detect top boundary', () => {
+        assert.equal(rectangle.top, 20);
+    });
+
+    it ('should detect bottom boundary', () => {
+        assert.equal(rectangle.bottom, 28);
+    });
+
+    it ('should detect left boundary', () => {
+        assert.equal(rectangle.left, 17);
+    });
+
+    it ('should detect right boundary', () => {
+        assert.equal(rectangle.right, 22);
+    });
+
+    it ('should detect width', () => {
+        assert.equal(rectangle.width, 6);
+    });
+
+    it ('should detect height', () => {
+        assert.equal(rectangle.height, 9);
     });
 });
