@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import pasteImage from 'paste-image';
-import { measureFromPosition } from './util';
+import { measureFromPosition, detectContainingRectangle, Rectangle } from './util';
 
 import './style.css';
 
-class App extends React.Component<{}, {
+interface AppState {
     top: number | null;
     left: number | null;
     width: number | null;
@@ -13,11 +13,14 @@ class App extends React.Component<{}, {
     cursorX: number | null;
     cursorY: number | null;
     tolerance: number;
-}> {
+    sizeRectangle: Rectangle | null;
+}
+
+class App extends React.Component<{}, AppState> {
 
     canvas: HTMLCanvasElement | null = null;
     ctx: CanvasRenderingContext2D | null = null;
-    state = {
+    state: AppState = {
         top: null,
         left: null,
         width: null,
@@ -25,6 +28,7 @@ class App extends React.Component<{}, {
         cursorX: null,
         cursorY: null,
         tolerance: 0,
+        sizeRectangle: null,
     };
     imageData: ImageData | null = null;
 
@@ -78,6 +82,25 @@ class App extends React.Component<{}, {
         }));
     };
 
+    onStartDrawRectangle: React.MouseEventHandler<HTMLCanvasElement> = e => {
+        const startX = e.nativeEvent.offsetX;
+        const startY = e.nativeEvent.offsetY;
+        const onMouseUpHandler = (e: MouseEvent) => {
+            document.removeEventListener('mouseup', onMouseUpHandler);
+            const endX = e.offsetX;
+            const endY = e.offsetY;
+            console.log(startX, startY, endX, endY);
+            if (this.imageData) {
+                this.setState({
+                    sizeRectangle: detectContainingRectangle(this.imageData, startX, startY, endX, endY),
+                });
+            } else {
+                alert('no image data');
+            }
+        };
+        document.addEventListener('mouseup', onMouseUpHandler);
+    }
+
     render() {
         return (
             <div>
@@ -97,8 +120,18 @@ class App extends React.Component<{}, {
                 </div>
                 <div>Width: {this.state.width}</div>
                 <div>Height: {this.state.height}</div>
+                { this.state.sizeRectangle != null ? (
+                    <div>
+                        <div>Width: {this.state.sizeRectangle.width}</div>
+                        <div>Height: {this.state.sizeRectangle.height}</div>
+                    </div>
+                ) : null }
                 <div style={{position: 'relative'}}>
-                    <canvas ref={this.onGrabCanvas} onMouseMove={this.onMeasureWithPosition} />
+                    <canvas
+                        ref={this.onGrabCanvas}
+                        onMouseMove={this.onMeasureWithPosition}
+                        onMouseDown={this.onStartDrawRectangle}
+                    />
                     { this.state.top != null && this.state.height != null && this.state.cursorX != null ? (
                         <div style={{
                             position: 'absolute',
@@ -107,6 +140,7 @@ class App extends React.Component<{}, {
                             height: this.state.height,
                             top: this.state.top,
                             left: this.state.cursorX,
+                            pointerEvents: 'none',
                         }} />
                     ) : null }
                     { this.state.left != null && this.state.width != null && this.state.cursorY != null ? (
@@ -117,6 +151,17 @@ class App extends React.Component<{}, {
                             height: 1,
                             top: this.state.cursorY,
                             left: this.state.left,
+                            pointerEvents: 'none',
+                        }} />
+                    ) : null }
+                    { this.state.sizeRectangle != null ? (
+                        <div style={{
+                            position: 'absolute',
+                            border: 'thin green solid',
+                            top: this.state.sizeRectangle.top,
+                            left: this.state.sizeRectangle.left,
+                            width: this.state.sizeRectangle.width,
+                            height: this.state.sizeRectangle.height,
                         }} />
                     ) : null }
                 </div>
