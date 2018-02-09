@@ -48,11 +48,14 @@ class App extends React.Component<{}, {
         const cursorX = e.nativeEvent.offsetX;
         const cursorY = e.nativeEvent.offsetY;
         if (this.imageData) {
+            const {top, left, width, height} = measureFromPosition(this.imageData, cursorX, cursorY, this.state.tolerance);
             this.setState({
-                ...measureFromPosition(this.imageData, cursorX, cursorY, this.state.tolerance),
+                top,
+                left,
+                width,
+                height,
                 cursorX,
                 cursorY,
-                tolerance: this.state.tolerance,
             });
         }
     };
