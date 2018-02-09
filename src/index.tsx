@@ -98,7 +98,7 @@ class App extends React.Component<{}, {
                 <div>Width: {this.state.width}</div>
                 <div>Height: {this.state.height}</div>
                 <div style={{position: 'relative'}}>
-                    <canvas ref={this.onGrabCanvas} onClick={this.onMeasureWithPosition} />
+                    <canvas ref={this.onGrabCanvas} onMouseMove={this.onMeasureWithPosition} />
                     { this.state.top != null && this.state.height != null && this.state.cursorX != null ? (
                         <div style={{
                             position: 'absolute',
