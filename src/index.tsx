@@ -137,9 +137,8 @@ class App extends React.Component<{}, AppState> {
     render() {
         return (
             <div>
-                <div>Use ctrl (or cmd) + V to paste your image</div>
                 <div>
-                    Tolerance: ({this.state.tolerance})
+                    Tolerance:
                     <input
                         type="range"
                         min="0"
@@ -150,14 +149,10 @@ class App extends React.Component<{}, AppState> {
                     />
                     <button onClick={this.decrementTolerance}>-</button>
                     <button onClick={this.incrementTolerance}>+</button>
+                    ({this.state.tolerance})
                 </div>
-                <div>Width: {this.state.width}</div>
-                <div>Height: {this.state.height}</div>
-                { this.state.sizeRectangle != null ? (
-                    <div>
-                        <div>Width: {this.state.sizeRectangle.width}</div>
-                        <div>Height: {this.state.sizeRectangle.height}</div>
-                    </div>
+                { this.imageData == null ? (
+                    <div>Use ctrl (or cmd) + V to paste your image</div>
                 ) : null }
                 <div style={{position: 'relative'}}>
                     <canvas
@@ -165,6 +160,19 @@ class App extends React.Component<{}, AppState> {
                         onMouseMove={this.onMeasureWithPosition}
                         onMouseDown={this.onStartDrawRectangle}
                     />
+                    { this.state.cursorX != null && this.state.cursorY != null && this.state.isMouseDown === false ? (
+                        <div style={{
+                            position: 'absolute',
+                            backgroundColor: 'black',
+                            color: 'white',
+                            top: this.state.cursorY + 16,
+                            left: this.state.cursorX + 16,
+                            padding: '2px 4px',
+                            pointerEvents: 'none',
+                        }}>
+                            {this.state.width} * {this.state.height}
+                        </div>
+                    ) : null }
                     { this.state.top != null && this.state.height != null && this.state.cursorX != null && this.state.isMouseDown === false ? (
                         <div style={{
                             position: 'absolute',
@@ -208,6 +216,19 @@ class App extends React.Component<{}, AppState> {
                             height: this.state.tmpRectangle.height,
                             pointerEvents: 'none',
                         }} />
+                    ) : null }
+                    { this.state.sizeRectangle != null ? (
+                        <div style={{
+                            position: 'absolute',
+                            backgroundColor: 'black',
+                            color: 'lightgreen',
+                            top: this.state.sizeRectangle.top + 16,
+                            left: this.state.sizeRectangle.left + 16,
+                            padding: '2px 4px',
+                            pointerEvents: 'none',
+                        }}>
+                            {this.state.sizeRectangle.width} * {this.state.sizeRectangle.height}
+                        </div>
                     ) : null }
                 </div>
             </div>
