@@ -147,7 +147,7 @@ describe ('detectContainingRectangle', () => {
 
     beforeEach(async () => {
         const imageData = await loadSampleImageData();
-        rectangle = detectContainingRectangle(imageData, 14, 17, 25, 30);
+        rectangle = detectContainingRectangle(imageData, 0, 14, 17, 25, 30);
     });
 
     it ('should detect top boundary', () => {

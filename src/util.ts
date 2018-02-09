@@ -51,11 +51,11 @@ export interface Rectangle {
     height: number;
 }
 
-export function detectContainingRectangle(imageData: ImageData, x1: number, y1: number, x2: number, y2: number): Rectangle {
-    const top = detectTopBoundary(imageData, x1, y1, x2, y2);
-    const left = detectLeftBoundary(imageData, x1, y1, x2, y2);
-    const bottom = detectBottomBoundary(imageData, x1, y1, x2, y2);
-    const right = detectRightBoundary(imageData, x1, y1, x2, y2);
+export function detectContainingRectangle(imageData: ImageData, tolerance: number, x1: number, y1: number, x2: number, y2: number): Rectangle {
+    const top = detectTopBoundary(imageData, tolerance, x1, y1, x2, y2);
+    const left = detectLeftBoundary(imageData, tolerance, x1, y1, x2, y2);
+    const bottom = detectBottomBoundary(imageData, tolerance, x1, y1, x2, y2);
+    const right = detectRightBoundary(imageData, tolerance, x1, y1, x2, y2);
     return {
         top,
         left,
@@ -66,58 +66,58 @@ export function detectContainingRectangle(imageData: ImageData, x1: number, y1: 
     };
 }
 
-function detectTopBoundary(imageData: ImageData, x1: number, y1: number, x2: number, y2: number): number {
+function detectTopBoundary(imageData: ImageData, tolerance: number, x1: number, y1: number, x2: number, y2: number): number {
     const baseColor = getColorAtPixel(imageData, x1, y1);
     for (let currentY = y1; currentY < y2; currentY++) {
-        if (!allLineIsSamePixel(imageData, baseColor, x1, x2, currentY)) {
+        if (!allLineIsSamePixel(imageData, baseColor, tolerance, x1, x2, currentY)) {
             return currentY;
         }
     }
     return y2;
 }
 
-function detectBottomBoundary(imageData: ImageData, x1: number, y1: number, x2: number, y2: number): number {
+function detectBottomBoundary(imageData: ImageData, tolerance: number, x1: number, y1: number, x2: number, y2: number): number {
     const baseColor = getColorAtPixel(imageData, x1, y1);
     for (let currentY = y2; currentY > y1; currentY--) {
-        if (!allLineIsSamePixel(imageData, baseColor, x1, x2, currentY)) {
+        if (!allLineIsSamePixel(imageData, baseColor, tolerance, x1, x2, currentY)) {
             return currentY;
         }
     }
     return y1;
 }
 
-function detectLeftBoundary(imageData: ImageData, x1: number, y1: number, x2: number, y2: number): number {
+function detectLeftBoundary(imageData: ImageData, tolerance: number, x1: number, y1: number, x2: number, y2: number): number {
     const baseColor = getColorAtPixel(imageData, x1, y1);
     for (let currentX = x1; currentX < x2; currentX++) {
-        if (!allColumnIsSamePixel(imageData, baseColor, y1, y2, currentX)) {
+        if (!allColumnIsSamePixel(imageData, baseColor, tolerance, y1, y2, currentX)) {
             return currentX;
         }
     }
     return x2;
 }
 
-function detectRightBoundary(imageData: ImageData, x1: number, y1: number, x2: number, y2: number): number {
+function detectRightBoundary(imageData: ImageData, tolerance: number, x1: number, y1: number, x2: number, y2: number): number {
     const baseColor = getColorAtPixel(imageData, x1, y1);
     for (let currentX = x2; currentX > x1; currentX--) {
-        if (!allColumnIsSamePixel(imageData, baseColor, y1, y2, currentX)) {
+        if (!allColumnIsSamePixel(imageData, baseColor, tolerance, y1, y2, currentX)) {
             return currentX;
         }
     }
     return x1;
 }
 
-function allLineIsSamePixel(imageData: ImageData, baseColor: Color, x1: number, x2: number, y: number): boolean {
+function allLineIsSamePixel(imageData: ImageData, baseColor: Color, tolerance: number, x1: number, x2: number, y: number): boolean {
     for (let currentX = x1; currentX < x2; currentX++) {
-        if (!colorAreSimilar(baseColor, getColorAtPixel(imageData, currentX, y), 0)) {
+        if (!colorAreSimilar(baseColor, getColorAtPixel(imageData, currentX, y), tolerance)) {
             return false;
         }
     }
     return true;
 }
 
-function allColumnIsSamePixel(imageData: ImageData, baseColor: Color, y1: number, y2: number, x: number): boolean {
+function allColumnIsSamePixel(imageData: ImageData, baseColor: Color, tolerance: number, y1: number, y2: number, x: number): boolean {
     for (let currentY = y1; currentY < y2; currentY++) {
-        if (!colorAreSimilar(baseColor, getColorAtPixel(imageData, x, currentY), 0)) {
+        if (!colorAreSimilar(baseColor, getColorAtPixel(imageData, x, currentY), tolerance)) {
             return false;
         }
     }

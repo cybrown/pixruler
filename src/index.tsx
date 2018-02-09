@@ -14,6 +14,13 @@ interface AppState {
     cursorY: number | null;
     tolerance: number;
     sizeRectangle: Rectangle | null;
+    tmpRectangle: {
+        top: number;
+        left: number;
+        width: number;
+        height: number;
+    } | null;
+    isMouseDown: boolean;
 }
 
 class App extends React.Component<{}, AppState> {
@@ -29,6 +36,8 @@ class App extends React.Component<{}, AppState> {
         cursorY: null,
         tolerance: 0,
         sizeRectangle: null,
+        tmpRectangle: null,
+        isMouseDown: false,
     };
     imageData: ImageData | null = null;
 
@@ -83,22 +92,46 @@ class App extends React.Component<{}, AppState> {
     };
 
     onStartDrawRectangle: React.MouseEventHandler<HTMLCanvasElement> = e => {
-        const startX = e.nativeEvent.offsetX;
-        const startY = e.nativeEvent.offsetY;
+        const originX = e.nativeEvent.offsetX;
+        const originY = e.nativeEvent.offsetY;
+        this.setState({
+            tmpRectangle: {
+                top: originX,
+                left: originY,
+                height: 0,
+                width: 0,
+            },
+            isMouseDown: true,
+        });
+        const onMouseMoveHandler = (e: MouseEvent) => {
+            const [startX, endX] = originX > e.offsetX ? [e.offsetX, originX] : [originX, e.offsetX];
+            const [startY, endY] = originY > e.offsetY ? [e.offsetY, originY] : [originY, e.offsetY];
+            this.setState({
+                tmpRectangle: {
+                    top: startY,
+                    left: startX,
+                    width: endX - startX,
+                    height: endY - startY,
+                },
+            });
+        };
         const onMouseUpHandler = (e: MouseEvent) => {
             document.removeEventListener('mouseup', onMouseUpHandler);
-            const endX = e.offsetX;
-            const endY = e.offsetY;
-            console.log(startX, startY, endX, endY);
+            document.removeEventListener('mousemove', onMouseMoveHandler);
+            const [startX, endX] = originX > e.offsetX ? [e.offsetX, originX] : [originX, e.offsetX];
+            const [startY, endY] = originY > e.offsetY ? [e.offsetY, originY] : [originY, e.offsetY];
             if (this.imageData) {
                 this.setState({
-                    sizeRectangle: detectContainingRectangle(this.imageData, startX, startY, endX, endY),
+                    sizeRectangle: detectContainingRectangle(this.imageData, this.state.tolerance, startX, startY, endX, endY),
+                    tmpRectangle: null,
+                    isMouseDown: false,
                 });
             } else {
                 alert('no image data');
             }
         };
         document.addEventListener('mouseup', onMouseUpHandler);
+        document.addEventListener('mousemove', onMouseMoveHandler);
     }
 
     render() {
@@ -132,7 +165,7 @@ class App extends React.Component<{}, AppState> {
                         onMouseMove={this.onMeasureWithPosition}
                         onMouseDown={this.onStartDrawRectangle}
                     />
-                    { this.state.top != null && this.state.height != null && this.state.cursorX != null ? (
+                    { this.state.top != null && this.state.height != null && this.state.cursorX != null && this.state.isMouseDown === false ? (
                         <div style={{
                             position: 'absolute',
                             border: 'red thin solid',
@@ -143,7 +176,7 @@ class App extends React.Component<{}, AppState> {
                             pointerEvents: 'none',
                         }} />
                     ) : null }
-                    { this.state.left != null && this.state.width != null && this.state.cursorY != null ? (
+                    { this.state.left != null && this.state.width != null && this.state.cursorY != null && this.state.isMouseDown === false ? (
                         <div style={{
                             position: 'absolute',
                             border: 'red thin solid',
@@ -162,6 +195,18 @@ class App extends React.Component<{}, AppState> {
                             left: this.state.sizeRectangle.left,
                             width: this.state.sizeRectangle.width,
                             height: this.state.sizeRectangle.height,
+                            pointerEvents: 'none',
+                        }} />
+                    ) : null }
+                    { this.state.tmpRectangle != null ? (
+                        <div style={{
+                            position: 'absolute',
+                            border: 'thin blue solid',
+                            top: this.state.tmpRectangle.top,
+                            left: this.state.tmpRectangle.left,
+                            width: this.state.tmpRectangle.width,
+                            height: this.state.tmpRectangle.height,
+                            pointerEvents: 'none',
                         }} />
                     ) : null }
                 </div>
