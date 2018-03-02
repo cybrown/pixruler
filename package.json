@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "runpack server",
+    "build": "runpack build",
     "test": "runpack test"
   },
   "dependencies": {
